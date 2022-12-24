@@ -9,9 +9,9 @@ const add = async (req: Request, res: Response) => {
         const user_id = Number(
             resolveToken(req.headers.authorization as string)
         );
-        const { Products } = req.body;
+        const { products } = req.body;
 
-        for (const product of Products) {
+        for (const product of products) {
             await Cart.add(user_id, product.product_id, product.quantity);
         }
         const currentCart = await Cart.currentCart(user_id);

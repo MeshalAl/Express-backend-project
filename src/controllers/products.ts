@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import ProductModel, { Product } from '../models/Product';
+import ProductModel from '../models/Product';
+import { Product } from '../types/types';
 
 /*
 #### Products
@@ -27,25 +28,28 @@ const show = async (req: Request, res: Response) => {
             return res.status(400).send('numeric id required.');
         }
         const fetchedProduct = await Product.show(Number(id));
-        res.json(fetchedProduct);
+        if (!fetchedProduct) {
+            return res.send('product does not exist.');
+        }
+        return res.json(fetchedProduct);
     } catch (error) {
         throw new Error(`[Error] Failed to get product ${error}`);
     }
 };
 const create = async (req: Request, res: Response) => {
     try {
-        const { name, price } = req.body;
+        const { product_name, price } = req.body;
         let { category } = req.body;
 
-        if (!name || !price) {
-            return res.status(400).send('name and price are required.');
+        if (!product_name || !price) {
+            return res.status(400).send('product_name and price are required.');
         }
         if (isNaN(price)) {
             return res.status(400).send('price must be numeric.');
         }
         category = category ? category : 'uncategorized';
 
-        const product: Product = { name, price, category };
+        const product: Product = { product_name, price, category };
         const createdProduct = await Product.create(product);
 
         return res.json(createdProduct);

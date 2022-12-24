@@ -1,5 +1,5 @@
 import client from '../database';
-import { Product } from './Product';
+import { Product } from '../types/types';
 
 /*
 #### Orders route

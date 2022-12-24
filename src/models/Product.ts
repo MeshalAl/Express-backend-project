@@ -1,5 +1,5 @@
 import client from '../database';
-
+import { Product } from '../types/types';
 /*
 #### Products
 - Index 
@@ -14,13 +14,7 @@ import client from '../database';
 - [OPTIONAL] category
 */
 
-export type Product = {
-    product_id?: string;
-    name: string;
-    price: number;
-    category: string;
-    quantity?: number;
-};
+
 
 class ProductModel {
     async index(): Promise<Product[]> {
@@ -53,10 +47,10 @@ class ProductModel {
         try {
             const conn = await client.connect();
             const query =
-                'INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *;';
+                'INSERT INTO products (product_name, price, category) VALUES($1, $2, $3) RETURNING *;';
 
             const result = await conn.query(query, [
-                product.name,
+                product.product_name,
                 product.price,
                 product.category,
             ]);

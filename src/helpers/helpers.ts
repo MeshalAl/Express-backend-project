@@ -4,9 +4,8 @@ export const resolveToken = (auth: string) => {
     try {
         const token = auth?.split(' ')[1];
         const decoded = jwt.decode(token) as JwtPayload;
-        const userId = decoded.user.id;
-        if (userId) {
-            return userId;
+        if (decoded.user.user_id) {
+            return decoded.user.user_id;
         }
         return null;
     } catch (error) {

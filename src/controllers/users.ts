@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import UserModel, { User } from '../models/User';
+import UserModel from '../models/User';
+import { User } from '../types/types';
 import jwt from 'jsonwebtoken';
 
 const User = new UserModel();
@@ -55,16 +56,16 @@ const create = async (req: Request, res: Response) => {
 };
 
 const authenticate = async (req: Request, res: Response) => {
-    const { id, password } = req.body;
+    const { user_id, password } = req.body;
 
-    if (!id || !password) {
-        return res.status(400).send('id and password are required.');
+    if (!user_id || !password) {
+        return res.status(400).send('user_id and password are required.');
     }
     try {
-        const user = await User.authenticate(id, password);
+        const user = await User.authenticate(user_id, password);
 
         if (!user) {
-            res.status(400).send('invalid password.');
+            return res.status(400).send('user or password is invalid.');
         }
 
         const token = jwt.sign({ user }, TOKEN_SECRET);

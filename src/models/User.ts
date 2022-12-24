@@ -1,19 +1,9 @@
 import client from '../database';
 import bcrypt from 'bcrypt';
+import { User } from '../types/types';
 
 const { SALT, PEPPER } = process.env;
 
-/*id SERIAL PRIMARY KEY,
-firstName VARCHAR(100) NOT NULL,
-lastName VARCHAR(100) NOT NULL,
-password text NOT NULL */
-
-export type User = {
-    id?: string;
-    firstname: string;
-    lastname: string;
-    password: string;
-};
 class UserModel {
     async create(user: User): Promise<User> {
         try {
@@ -42,7 +32,7 @@ class UserModel {
     async index(): Promise<User[]> {
         try {
             const conn = await client.connect();
-            const query = 'SELECT id, firstname, lastname FROM users;';
+            const query = 'SELECT user_id, firstname, lastname FROM users;';
             const result = await conn.query(query);
 
             conn.release();
@@ -53,12 +43,12 @@ class UserModel {
             );
         }
     }
-    async show(id: number): Promise<User> {
+    async show(user_id: number): Promise<User> {
         try {
             const conn = await client.connect();
             const query =
-                'SELECT id, firstname, lastname FROM users WHERE id = $1;';
-            const result = await conn.query(query, [id]);
+                'SELECT user_id, firstname, lastname FROM users WHERE user_id = $1;';
+            const result = await conn.query(query, [user_id]);
 
             conn.release();
             return result.rows[0];
@@ -68,13 +58,20 @@ class UserModel {
             );
         }
     }
-    async authenticate(id: number, password: string): Promise<User | null> {
+    async authenticate(
+        user_id: number,
+        password: string
+    ): Promise<User | null> {
         try {
             const conn = await client.connect();
-            const passwordQuery = 'SELECT password FROM users WHERE id = $1;';
-            const passwordResult = await conn.query(passwordQuery, [id]);
+            const passwordQuery = 'SELECT password FROM users WHERE user_id = $1;';
+            const passwordResult = await conn.query(passwordQuery, [user_id]);
             const hashedPassword = passwordResult.rows[0];
 
+            if (!hashedPassword) {
+                conn.release();
+                return null;
+            }
             const passwordCheck = bcrypt.compareSync(
                 `${password}${PEPPER}`,
                 hashedPassword.password
@@ -82,8 +79,8 @@ class UserModel {
 
             if (passwordCheck) {
                 const userQuery =
-                    'SELECT id, firstname, lastname FROM users WHERE id = $1;';
-                const userResult = await conn.query(userQuery, [id]);
+                    'SELECT user_id, firstname, lastname FROM users WHERE user_id = $1;';
+                const userResult = await conn.query(userQuery, [user_id]);
                 conn.release();
                 return userResult.rows[0];
             }
