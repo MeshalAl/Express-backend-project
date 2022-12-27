@@ -1,12 +1,20 @@
 import { Router } from 'express';
-import { create } from '../../controllers/orders';
+import {
+    create,
+    show,
+    showAll,
+    getHistory,
+    completeOrder,
+} from '../../controllers/orders';
 import validateToken from '../../middleware/validators';
-//#### Orders
-//- Current Order by user (args: user id)[token required]
-//- [OPTIONAL] Completed Orders by user (args: user id)[token required]
 
 const route = Router();
 
+route.get('/', validateToken, showAll);
+route.get(':id', validateToken, show);
+route.get('/history', validateToken, getHistory);
+
 route.post('/', validateToken, create);
+route.post('/complete/:id', validateToken, completeOrder);
 
 export default route;

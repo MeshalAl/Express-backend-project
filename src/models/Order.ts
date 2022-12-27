@@ -1,26 +1,10 @@
-import { query } from 'express';
 import client from '../database';
-import Product from '../models/Product';
 import { Order } from '../types/types';
 import { ProductsDTO } from '../types/types';
-/*
-#### Orders route
-- Current Order by user (args: user id)[token required]
-- [OPTIONAL] Completed Orders by user (args: user id)[token required]
-#### Orders
-- id
-- id of each product in the order
-- quantity of each product in the order
-- user_id
-- status of order (active or complete)
-*/
 
 class OrderModel {
     async create(user_id: number, products: ProductsDTO[]): Promise<Order[]> {
         try {
-            // close previous orders on creation
-            await this.completePreviousOrder(user_id);
-
             const conn = await client.connect();
             const defaultStatus = 'active';
 
@@ -74,47 +58,65 @@ class OrderModel {
             return result.rows[0];
         } catch (error) {
             throw new Error(
-                `[Error] Failed to create order on database:\n ${error} `
+                `[Error] Failed to gen an order on database:\n ${error} `
             );
         }
     }
-    async completePreviousOrder(user_id: number): Promise<boolean> {
+    async showAll(user_id: number): Promise<Order[]> {
+        try {
+            const conn = await client.connect();
+            const query = 'SELECT * FROM orders WHERE user_id = $1;';
+            const result = await conn.query(query, [user_id]);
+
+            return result.rows;
+        } catch (error) {
+            throw new Error(
+                `[Error] Failed to get all orders from database:\n ${error} `
+            );
+        }
+    }
+    async getHistory(user_id: number): Promise<Order[]> {
         try {
             const conn = await client.connect();
             const query =
-                "UPDATE orders SET status = 'completed' WHERE user_id = $1";
-            await conn.query(query, [user_id]);
-            conn.release();
-            return true;
+                "SELECT * FROM orders WHERE user_id = $1 AND status = 'completed';";
+            const result = await conn.query(query, [user_id]);
+            return result.rows;
         } catch (error) {
             throw new Error(
-                `[Error] Failed to complete previous orders on database:\n ${error} `
+                `[Error] Failed to get completed orders from database:\n ${error} `
             );
         }
     }
-    
 
-    // async addCartToOrder(
-    //     product_id: string,
-    //     quantity: number,
-    //     user_id: string
-    // ): Promise<Order> {
-    //     try {
-    //         const conn = await client.connect();
-    //         const productQuery =
-    //             'SELECT * FROM products WHERE product_id = $1;';
-    //         const product = conn.query(productQuery, [product_id]);
+    async completeOrder(
+        user_id: number,
+        order_id?: number,
+        all?: boolean
+    ): Promise<Order[] | Order | null> {
+        try {
+            const conn = await client.connect();
 
-    //         const OrderQuery = 'INSERT INTO order_products';
-    //         conn.release();
-
-    //         return null;
-    //     } catch (error) {
-    //         throw new Error(
-    //             `[Error] Failed to add to order on database:\n ${error} `
-    //         );
-    //     }
-    // }
+            if (order_id && !all) {
+                const query =
+                    "UPDATE orders SET status = 'completed' WHERE user_id = $1 AND order_id = $2";
+                const result = await conn.query(query, [user_id, order_id]);
+                conn.release();
+                return result.rows[0];
+            } else if (!order_id && all) {
+                const query =
+                    "UPDATE orders SET status = 'completed' WHERE user_id = $1 ";
+                const result = await conn.query(query, [user_id]);
+                conn.release();
+                return result.rows;
+            }
+            return null;
+        } catch (error) {
+            throw new Error(
+                `[Error] Failed to complete order(s) on database:\n ${error} `
+            );
+        }
+    }
 }
 
 export default OrderModel;

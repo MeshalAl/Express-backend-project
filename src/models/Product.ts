@@ -1,21 +1,5 @@
 import client from '../database';
 import { Product } from '../types/types';
-/*
-#### Products
-- Index 
-- Show
-- Create [token required]
-- [OPTIONAL] Top 5 most popular products --Skip
-- [OPTIONAL] Products by category (args: product category)
-#### Product
--  id
-- name
-- price
-- [OPTIONAL] category
-*/
-
-
-
 class ProductModel {
     async index(): Promise<Product[]> {
         try {

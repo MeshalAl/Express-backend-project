@@ -13,4 +13,4 @@ export const resolveToken = (auth: string) => {
             `[Error] could not decode user info from token: ${error}`
         );
     }
-}
+};

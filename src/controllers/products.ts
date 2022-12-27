@@ -2,15 +2,6 @@ import { Request, Response } from 'express';
 import ProductModel from '../models/Product';
 import { Product } from '../types/types';
 
-/*
-#### Products
-- Index 
-- Show
-- Create [token required]
-- [OPTIONAL] Top 5 most popular products 
-- [OPTIONAL] Products by category (args: product category)
-*/
-
 const Product = new ProductModel();
 
 const index = async (req: Request, res: Response) => {

@@ -64,7 +64,8 @@ class UserModel {
     ): Promise<User | null> {
         try {
             const conn = await client.connect();
-            const passwordQuery = 'SELECT password FROM users WHERE user_id = $1;';
+            const passwordQuery =
+                'SELECT password FROM users WHERE user_id = $1;';
             const passwordResult = await conn.query(passwordQuery, [user_id]);
             const hashedPassword = passwordResult.rows[0];
 

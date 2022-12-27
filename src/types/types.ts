@@ -14,7 +14,7 @@ export type Product = {
 export type ProductsDTO = {
     product_id: number;
     quantity: number;
-}
+};
 export type Order = {
     order_id: number;
     user_id: number;
