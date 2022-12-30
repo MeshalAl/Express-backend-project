@@ -6,10 +6,10 @@ import validateToken from '../../middleware/validators';
 
 const route = Router();
 
-route.get('/', validateToken, index);
 route.get('/:id', validateToken, show);
+route.get('/', validateToken, index);
 
-route.post('/', create);
 route.post('/auth', authenticate);
+route.post('/', create);
 
 export default route;

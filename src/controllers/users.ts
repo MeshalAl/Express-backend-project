@@ -41,9 +41,14 @@ const create = async (req: Request, res: Response) => {
         const { firstname, lastname, password } = req.body;
 
         if (!firstname || !lastname || !password) {
-            return res
-                .status(400)
-                .send('firstname, lastname, password are required.');
+            return res.status(400).json({
+                message: 'firstname, lastname, password required.',
+                format: {
+                    firstname: 'value',
+                    lastname: 'value',
+                    password: 'value',
+                },
+            });
         }
 
         const user: User = { firstname, lastname, password };
@@ -59,7 +64,13 @@ const authenticate = async (req: Request, res: Response) => {
     const { user_id, password } = req.body;
 
     if (!user_id || !password) {
-        return res.status(400).send('user_id and password are required.');
+        return res.status(400).json({
+            message: 'user_id, password required.',
+            format: {
+                user_id: 'numeric value',
+                password: 'value',
+            },
+        });
     }
     try {
         const user = await User.authenticate(user_id, password);

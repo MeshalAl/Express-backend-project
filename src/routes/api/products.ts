@@ -4,8 +4,8 @@ import validateToken from '../../middleware/validators';
 
 const route = Router();
 
-route.get('/', index);
 route.get('/:id', show);
+route.get('/', index);
 
 route.post('/', validateToken, create);
 

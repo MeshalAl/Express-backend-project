@@ -33,7 +33,14 @@ const create = async (req: Request, res: Response) => {
         let { category } = req.body;
 
         if (!product_name || !price) {
-            return res.status(400).send('product_name and price are required.');
+            return res.status(400).json({
+                message: 'product_name and price are required.',
+                format: {
+                    product_name: 'value',
+                    price: 'numeric value',
+                    category: 'value, optional',
+                },
+            });
         }
         if (isNaN(price)) {
             return res.status(400).send('price must be numeric.');
