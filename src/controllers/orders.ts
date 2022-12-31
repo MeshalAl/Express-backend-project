@@ -68,14 +68,27 @@ const completeOrder = async (req: Request, res: Response) => {
             resolveToken(req.headers.authorization as string)
         );
         const { order_id, all } = req.body;
-        if (!order_id && !all) {
-            return res.send('order_id OR all flag is required.');
+        if ((!order_id && !all) || (order_id && all)) {
+            return res.send('Only order_id or all flag is accepted.');
+        }
+
+        if (order_id && isNaN(order_id)) {
+            return res.send('order_id must be numeric.');
+        }
+        let flag = false;
+
+        if (all) {
+            if (typeof all == 'boolean') {
+                flag = true;
+            } else {
+                return res.send('all flag must be boolean');
+            }
         }
 
         const completedOrders = await Order.completeOrder(
             user_id,
             order_id,
-            all
+            flag
         );
         return res.json(completedOrders);
     } catch (error) {

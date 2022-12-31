@@ -32,7 +32,8 @@ class UserModel {
     async index(): Promise<User[]> {
         try {
             const conn = await client.connect();
-            const query = 'SELECT user_id, firstname, lastname FROM users;';
+            const query =
+                'SELECT user_id, firstname, lastname FROM users ORDER BY user_id DESC;';
             const result = await conn.query(query);
 
             conn.release();

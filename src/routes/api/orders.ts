@@ -14,7 +14,7 @@ route.get('/history/', validateToken, getHistory);
 route.get('/:id', validateToken, show);
 route.get('/', validateToken, showAll);
 
-route.post('/complete/:id', validateToken, completeOrder);
+route.post('/complete/', validateToken, completeOrder);
 route.post('/', validateToken, create);
 
 export default route;

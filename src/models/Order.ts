@@ -65,7 +65,8 @@ class OrderModel {
     async showAll(user_id: number): Promise<Order[]> {
         try {
             const conn = await client.connect();
-            const query = 'SELECT * FROM orders WHERE user_id = $1;';
+            const query =
+                'SELECT * FROM orders WHERE user_id = $1 ORDER BY order_id DESC;';
             const result = await conn.query(query, [user_id]);
 
             return result.rows;
@@ -79,7 +80,7 @@ class OrderModel {
         try {
             const conn = await client.connect();
             const query =
-                "SELECT * FROM orders WHERE user_id = $1 AND status = 'completed';";
+                "SELECT * FROM orders WHERE user_id = $1 AND status = 'completed' ORDER BY order_id DESC;";
             const result = await conn.query(query, [user_id]);
             return result.rows;
         } catch (error) {
@@ -99,13 +100,13 @@ class OrderModel {
 
             if (order_id && !all) {
                 const query =
-                    "UPDATE orders SET status = 'completed' WHERE user_id = $1 AND order_id = $2";
+                    "UPDATE orders SET status = 'completed' WHERE user_id = $1 AND order_id = $2 RETURNING *;";
                 const result = await conn.query(query, [user_id, order_id]);
                 conn.release();
                 return result.rows[0];
             } else if (!order_id && all) {
                 const query =
-                    "UPDATE orders SET status = 'completed' WHERE user_id = $1 ";
+                    "UPDATE orders SET status = 'completed' WHERE user_id = $1 RETURNING *;";
                 const result = await conn.query(query, [user_id]);
                 conn.release();
                 return result.rows;
