@@ -11,7 +11,15 @@ const create = async (req: Request, res: Response) => {
         );
         const { Products } = req.body;
         if (!Products) {
-            return res.send('Add at least one product');
+            return res.status(400).json({
+                message: 'incorrect or missing order.',
+                format: {
+                    Products: [
+                        { product_id: 'number', quantity: 'number' },
+                        { product_id: 'number', quantity: 'number' },
+                    ],
+                },
+            });
         }
 
         const activeOrder = await Order.create(user_id, Products);

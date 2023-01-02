@@ -21,5 +21,6 @@ export type Order = {
     status: string;
     product_name?: string;
     quantity?: number;
+    price?: number;
     order_date?: string;
 };

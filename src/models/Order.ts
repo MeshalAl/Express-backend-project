@@ -48,14 +48,21 @@ class OrderModel {
             );
         }
     }
-    async show(user_id: number, order_id: number): Promise<Order> {
+    async show(user_id: number, order_id: number): Promise<Order[]> {
         try {
             const conn = await client.connect();
-            const query =
-                'SELECT * FROM orders WHERE user_id = $1 AND order_id = $2;';
+            const query = `
+            SELECT o.order_id, u.user_id, p.product_name, op.quantity, p.price, o.status, o.order_date
+                FROM (((orders AS o INNER JOIN users AS u 
+                    ON o.user_id = u.user_id) 
+                        INNER JOIN order_products AS op 
+                            ON o.order_id = op.order_id) 
+                                INNER JOIN products AS p
+                                    ON op.product_id = p.product_id)
+                                    WHERE u.user_id = $1 AND o.order_id = $2;`;
             const result = await conn.query(query, [user_id, order_id]);
 
-            return result.rows[0];
+            return result.rows;
         } catch (error) {
             throw new Error(
                 `[Error] Failed to gen an order on database:\n ${error} `
