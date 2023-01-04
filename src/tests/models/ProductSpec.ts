@@ -29,7 +29,7 @@ describe('Product model tests:', () => {
         expect(result.price).toBe(testProduct.price);
         expect(result.category).toBe(testProduct.category);
     });
-    it('get product by ID on model successful', async () => {
+    it('get product by category on model successful', async () => {
         const result = await product.getProductsByCategory(
             testProduct.category
         );
