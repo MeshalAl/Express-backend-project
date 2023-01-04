@@ -139,12 +139,12 @@ describe('Orders endpoints:', () => {
         const order = response.body;
 
         console.log(order);
-        expect(Number(order.order_id)).toBe(testOrderProduct_1.order_id);
-        expect(Number(order.user_id)).toBe(testOrderProduct_1.user_id);
-        expect(order.status).toBe('completed');
+        expect(Number(order[0].order_id)).toBe(testOrderProduct_1.order_id);
+        expect(Number(order[0].user_id)).toBe(testOrderProduct_1.user_id);
+        expect(order[0].status).toBe('completed');
 
-        testOrderProduct_1.status = order.status;
-        testOrderProduct_2.status = order.status;
+        testOrderProduct_1.status = order[0].status;
+        testOrderProduct_2.status = order[0].status;
     });
     it('get history of completed orders successful', async () => {
         const response = await request

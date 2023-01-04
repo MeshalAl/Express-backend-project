@@ -22,23 +22,23 @@ describe('USer model tests:', () => {
 
         testUser.user_id = Number(result.user_id);
     });
-    it('Authenticate and get token on user model successful ', async () => {
+    it('Authenticate and get user on user model successful ', async () => {
         const result = await user.authenticate(
             testUser.user_id as number,
             testUser.password
         );
 
         expect(result).toBeDefined();
-        console.log(`Token from User Model: ` + result);
+        console.log(`User with correct auth on User Model: `, result);
     });
-    it('No token on invalid user auth on model successful ', async () => {
+    it('No User on invalid user auth on model successful ', async () => {
         const result = await user.authenticate(
             testUser.user_id as number,
             'invalid password'
         );
 
         expect(result).toBe(null);
-        console.log(`Token from incorrect auth: ` + result);
+        console.log(`User with incorrect auth on User Model:`, result);
     });
     it('Show user by id successful ', async () => {
         const result = await user.show(testUser.user_id as number);
@@ -48,7 +48,6 @@ describe('USer model tests:', () => {
         expect(result.lastname).toBe(testUser.lastname);
         expect(result.password).toBeUndefined();
 
-        console.log(`Token from incorrect auth: ` + result);
     });
     it('get list of all users. successful ', async () => {
         const testUser2: User = {

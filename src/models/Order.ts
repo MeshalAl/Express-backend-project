@@ -1,9 +1,9 @@
 import client from '../database';
 import { Order } from '../types/types';
-import { ProductsDTO } from '../types/types';
+import { Product } from '../types/types';
 
 class OrderModel {
-    async create(user_id: number, products: ProductsDTO[]): Promise<Order[]> {
+    async create(user_id: number, products: Product[]): Promise<Order[]> {
         try {
             const conn = await client.connect();
             const defaultStatus = 'active';
@@ -108,7 +108,7 @@ class OrderModel {
         user_id: number,
         order_id?: number,
         all?: boolean
-    ): Promise<Order[] | Order | null> {
+    ): Promise<Order[] | null> {
         try {
             const conn = await client.connect();
 
@@ -117,7 +117,7 @@ class OrderModel {
                     "UPDATE orders SET status = 'completed' WHERE user_id = $1 AND order_id = $2 RETURNING *;";
                 const result = await conn.query(query, [user_id, order_id]);
                 conn.release();
-                return result.rows[0];
+                return result.rows;
             } else if (!order_id && all) {
                 const query =
                     "UPDATE orders SET status = 'completed' WHERE user_id = $1 RETURNING *;";
