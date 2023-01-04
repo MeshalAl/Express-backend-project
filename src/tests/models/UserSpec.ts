@@ -1,7 +1,5 @@
 import exp from 'constants';
 import test from 'node:test';
-import supertest from 'supertest';
-import app from '../..';
 import UserModel from '../../models/User';
 import { User } from '../../types/types';
 
