@@ -104,21 +104,4 @@ describe('Order model tests:', () => {
         expect(result[1].order_id).toBe(order_id);
         expect(result[0].order_id).toBe(order_id_2);
     });
-    // it('Complete order on model successful', async () => {
-    //     const result = (await order.completeOrder(
-    //         user_id,
-    //         order_id
-    //     )) as Order[];
-
-    //     expect(result[0].order_id).toBe(order_id);
-    //     expect(result[0].status).toBe('completed');
-
-    //     await order.completeOrder(user_id);
-    // });
-    // it('get completed order history successful', async () => {
-    //     const result = await order.getHistory(user_id);
-
-    //     expect(result[0].order_id).toBe(order_id);
-    //     expect(result[0].status).toBe('completed');
-    // });
 });
