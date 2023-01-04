@@ -86,8 +86,15 @@ class OrderModel {
     async getHistory(user_id: number): Promise<Order[]> {
         try {
             const conn = await client.connect();
-            const query =
-                "SELECT * FROM orders WHERE user_id = $1 AND status = 'completed' ORDER BY order_id DESC;";
+            const query = `
+            SELECT o.order_id, u.user_id, p.product_name, op.quantity, p.price, o.status, o.order_date
+                FROM (((orders AS o INNER JOIN users AS u 
+                    ON o.user_id = u.user_id) 
+                        INNER JOIN order_products AS op 
+                            ON o.order_id = op.order_id) 
+                                INNER JOIN products AS p
+                                    ON op.product_id = p.product_id)
+                                    WHERE u.user_id = $1 AND status = 'completed';`;
             const result = await conn.query(query, [user_id]);
             return result.rows;
         } catch (error) {

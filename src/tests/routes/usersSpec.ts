@@ -51,7 +51,7 @@ describe('Users endpoints:', () => {
         expect(decoded.user.firstname).toBe(testUser.firstname);
         expect(decoded.user.lastname).toBe(testUser.lastname);
 
-        console.log('\n' + testToken + '\n');
+        console.log('\nToken: ' + testToken + '\n');
     });
     it('Get index of users successful.', async () => {
         const response = await request

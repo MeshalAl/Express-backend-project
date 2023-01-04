@@ -51,7 +51,7 @@ const showAll = async (req: Request, res: Response) => {
         const user_id = Number(
             resolveToken(req.headers.authorization as string)
         );
-        const orders = await Order.showAll(user_id);
+        const orders = await Order.showAll(user_id as number);
         return res.json(orders);
     } catch (error) {
         throw new Error(`[Error] Could not get all orders: ${error}`);
@@ -95,7 +95,7 @@ const completeOrder = async (req: Request, res: Response) => {
 
         const completedOrders = await Order.completeOrder(
             user_id,
-            order_id,
+            order_id as number,
             flag
         );
         return res.json(completedOrders);

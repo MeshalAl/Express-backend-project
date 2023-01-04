@@ -14,6 +14,7 @@ const usermodel = new UserModel();
 let testToken: string;
 let testOrderProduct_1: Order;
 let testOrderProduct_2: Order;
+let order_id: number;
 
 describe('Orders endpoints:', () => {
     const testProducts: Product[] = [
@@ -108,6 +109,7 @@ describe('Orders endpoints:', () => {
             .set('Authorization', `Bearer ${testToken}`);
 
         const order = response.body;
+        order_id = order[0].order_id;
 
         expect(order[0].order_id).toBe(testOrderProduct_1.order_id);
         expect(order[0].user_id).toBe(testOrderProduct_1.user_id);
@@ -127,7 +129,65 @@ describe('Orders endpoints:', () => {
         expect(order[1].quantity).toBe(testOrderProduct_2.quantity);
         expect(order[1].price).toBe(testOrderProduct_2.price);
     });
-    // it('get order by id successful', async () => {
+    it('Complete order successful', async () => {
+        const response = await request
+            .post(ordersRoute + `/complete`)
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${testToken}`)
+            .send({ order_id });
 
-    // });
+        const order = response.body;
+
+        console.log(order);
+        expect(Number(order.order_id)).toBe(testOrderProduct_1.order_id);
+        expect(Number(order.user_id)).toBe(testOrderProduct_1.user_id);
+        expect(order.status).toBe('completed');
+
+        testOrderProduct_1.status = order.status;
+        testOrderProduct_2.status = order.status;
+    });
+    it('get history of completed orders successful', async () => {
+        const response = await request
+            .get(ordersRoute + `/history`)
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${testToken}`);
+
+        const order = response.body;
+
+        expect(order).toContain(testOrderProduct_1);
+        expect(order).toContain(testOrderProduct_2);
+    });
+    it('get all orders successful', async () => {
+        const Products = [
+            {
+                product_id: testProducts[0].product_id,
+                quantity: testProducts[0].quantity,
+            },
+            {
+                product_id: testProducts[1].product_id,
+                quantity: testProducts[1].quantity,
+            },
+        ];
+
+        let response = await request
+            .post(ordersRoute)
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${testToken}`)
+            .send({ Products });
+
+        const order_2 = response.body;
+
+        response = await request
+            .get(ordersRoute)
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${testToken}`);
+
+        const orders = response.body;
+
+        expect(Number(orders[1].order_id)).toBe(testOrderProduct_1.order_id);
+        expect(Number(orders[1].user_id)).toBe(testOrderProduct_1.user_id);
+        expect(Number(orders[0].order_id)).toBe(order_2[0].order_id);
+        expect(orders[1].status).toBe(testOrderProduct_1.status);
+        expect(orders[0].status).toBe(order_2[0].status);
+    });
 });
