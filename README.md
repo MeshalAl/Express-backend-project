@@ -1,7 +1,7 @@
 
 ## Setup
-
-- After downloading the project locally run `npm install` to install dependencies. 
+- Clone `https://github.com/MeshalAl/Udacity-project-2.git`
+- `npm install` to install dependencies. 
 - Create a local PSQL database.
 - Create a .env file, edit the brackets `<>` with your values:
 ```
@@ -15,7 +15,7 @@ DB_PRODUCTION = production_db
 DB_TEST = test_db
 DB_DEV = dev_db
 
-ENV = <'test' | 'dev'>
+ENV = 'dev'
 
 SALT = <Int>
 PEPPER = <String>
