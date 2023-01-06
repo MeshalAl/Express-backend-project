@@ -1,4 +1,3 @@
-# Storefront Backend Project
 
 ## Setup
 
