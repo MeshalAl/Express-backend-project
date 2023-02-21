@@ -1,6 +1,6 @@
 
 ## Setup
-- Clone `https://github.com/MeshalAl/Udacity-project-2.git`
+- Clone `https://github.com/MeshalAl/Express-backend-project.git`
 - `npm install` to install dependencies. 
 - Create a local PSQL database.
 - Create a .env file, edit the brackets `<>` with your values:
